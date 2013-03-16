@@ -8,7 +8,7 @@
      :data
 
    Example :
-   (post \"http://duckduckgo.com/html/\"
+   (post \"http://example.com/foo\"
          {:user-agent \"Mozilla\"
           :timeout 0
           :data {:q \"clojure\"}})
