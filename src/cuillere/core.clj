@@ -1,19 +1,20 @@
 (ns cuillere.core
   "This namespace is used to parse HTML from different kind of sources.
 
-   For URL sources, you can supply requests options as a map.
-   Current available options are :
-     :user-agent
-     :timeout        ; default => 3000ms ; 0 => infinite
-     :data
+   For URL sources, you can supply requests options as a map:
+     :user-agent -> set the user-agent header
+     :timeout    -> set the connect + read timeout (default => 3000ms, 0 => disabled)
+     :cookies    -> cookies as map (name can be a keyword) : {name value}
 
    Example :
-   (post \"http://example.com/foo\"
+   (post \"http://example.com/login\"
+         {:username \"xxxxxx\"
+          :password \"yyyyyy\"}
          {:user-agent \"Mozilla\"
           :timeout 0
-          :data {:q \"clojure\"}})
+          :cookies {:foo \"foo\"
+                    :bar \"bar\"})
    "
-  (:refer-clojure :exclude [get])
   (:import [org.jsoup Jsoup Connection]
            [org.jsoup.nodes Document])
   (:use [clojure.walk :only [stringify-keys]]))
@@ -46,36 +47,34 @@
             (let [k (key param)
                   v (val param)]
               (cond
-               (= :data k) (.data conn (stringify-keys v))
                (= :user-agent k) (.userAgent conn v)
                (= :timeout k) (.timeout conn v)
+               (= :cookies k) (.cookies conn (stringify-keys v))
                :else conn)))
           connection
           params))
 
 (defn- ^Connection connect
-  "Create a connection to url with optional parameters."
+  "Create a connection to url with optional parameters as map."
   [url & [params]]
   (-> (Jsoup/connect url)
       (add-connection-params params)))
 
-(defn ^Document get
+(defn ^Document parse-url-get
   "Parse the HTML resulting of a HTTP GET."
   ([url]
-     (get url {}))
+     (parse-url-get url {}))
   ([url options]
      (-> url
-          (connect options)
-          .get)))
+         (connect options)
+         .get)))
 
-(defn ^Document post
-  "Parse the HTML resulting of a HTTP POST, with request params as a data map."
+(defn ^Document parse-url-post
+  "Parse the HTML resulting of a HTTP POST, with request parameters as a data map."
   ([url data]
-     (post url data {}))
+     (parse-url-post url data {}))
   ([url data options]
      (-> url
          (connect options)
          (.data (stringify-keys data))
          .post)))
-
-
