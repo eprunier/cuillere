@@ -1,22 +1,23 @@
-(ns cuillere.document
+(ns html-spoon.document
   (:import [org.jsoup.nodes Document Element]
            [org.jsoup.select Elements]))
 
 (defn ^Element head
-  "Head of the HTML document."
+  "Return the head element of the HTML document."
   [^Document doc]
   (.head doc))
 
 (defn title
-  "Title of the HTML document."
+  "Return the title of the HTML document."
   [^Document doc]
   (.title doc))
 
 (defn ^Element body
-  "Body of the HTML document."
+  "Return the body of the HTML document."
   [^Document doc]
   (.body doc))
 
 (defn ^Elements select
+  "Return a selection of HTML elements."
   [^Document doc selector]
   (.select doc selector))

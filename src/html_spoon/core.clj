@@ -1,4 +1,4 @@
-(ns cuillere.core
+(ns html-spoon.core
   "This namespace is used to parse HTML from different kind of sources.
 
    For URL sources, you can supply requests options as a map:

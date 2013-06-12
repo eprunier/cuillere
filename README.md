@@ -1,4 +1,4 @@
-# cuillere
+# html-spoon
 
 A Jsoup wrapper for Clojure
 
